@@ -6,4 +6,4 @@ Advent of Code Shenanigans
 
 | Year | Stars                                                                                            |
 |------|--------------------------------------------------------------------------------------------------|
-| 2023 | [![2023](https://img.shields.io/badge/stars%20🌟-2-yellow)](https://adventofcode.com/2023/stats) |
+| 2023 | [![2023](https://img.shields.io/badge/stars%20🌟-4-yellow)](https://adventofcode.com/2023/stats) |
