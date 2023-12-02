@@ -74,11 +74,7 @@ func parseSets(sets []string) []Set {
 			}
 		}
 
-		result = append(result, Set{
-			red:   red,
-			green: green,
-			blue:  blue,
-		})
+		result = append(result, Set{red, green, blue})
 	}
 
 	return result
