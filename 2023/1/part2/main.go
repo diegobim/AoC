@@ -18,15 +18,6 @@ var DigitParser = map[string]string{
 	"seven": "7",
 	"eight": "8",
 	"nine":  "9",
-	"1":     "1",
-	"2":     "2",
-	"3":     "3",
-	"4":     "4",
-	"5":     "5",
-	"6":     "6",
-	"7":     "7",
-	"8":     "8",
-	"9":     "9",
 }
 
 var DigitRegex = regexp.MustCompile(`\d|one|two|three|four|five|six|seven|eight|nine`)
@@ -38,7 +29,7 @@ func main() {
 	for scanner.Scan() {
 		line := scanner.Text()
 		digit1, digit2 := findMatches(line)
-		sum += parseCoord(digit1, digit2)
+		sum += parsePair(digit1, digit2)
 	}
 
 	fmt.Printf("Sum: %d\n", sum)
@@ -74,16 +65,14 @@ func findMatches(line string) (string, string) {
 }
 
 func parseDigit(digit string) string {
-	parsed, ok := DigitParser[digit]
-
-	if !ok {
-		panic(fmt.Sprintf("Invalid digit: %s", digit))
+	if parsed, ok := DigitParser[digit]; ok {
+		return parsed
 	}
 
-	return parsed
+	return digit
 }
 
-func parseCoord(digit1 string, digit2 string) int {
+func parsePair(digit1 string, digit2 string) int {
 	parsed, err := strconv.Atoi(parseDigit(digit1) + parseDigit(digit2))
 
 	if err != nil {
