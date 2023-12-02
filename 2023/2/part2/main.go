@@ -54,8 +54,6 @@ func main() {
 			}
 		}
 
-		fmt.Println(game.id, maxRed, maxGreen, maxBlue)
-
 		setPowerSum += maxRed * maxGreen * maxBlue
 	}
 
