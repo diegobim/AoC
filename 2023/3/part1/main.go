@@ -9,23 +9,23 @@ import (
 	"unicode"
 )
 
-type Coordinate struct {
+type Direction struct {
 	x int
 	y int
 }
 
 var (
-	left        = Coordinate{-1, 0}
-	topLeft     = Coordinate{-1, -1}
-	up          = Coordinate{0, -1}
-	topRight    = Coordinate{1, -1}
-	right       = Coordinate{1, 0}
-	bottomRight = Coordinate{1, 1}
-	down        = Coordinate{0, 1}
-	bottomLeft  = Coordinate{-1, 1}
+	left        = Direction{-1, 0}
+	topLeft     = Direction{-1, -1}
+	up          = Direction{0, -1}
+	topRight    = Direction{1, -1}
+	right       = Direction{1, 0}
+	bottomRight = Direction{1, 1}
+	down        = Direction{0, 1}
+	bottomLeft  = Direction{-1, 1}
 )
 
-var ScanDirections = []Coordinate{left, topLeft, up, topRight, right, bottomRight, down, bottomLeft}
+var ScanDirections = []Direction{left, topLeft, up, topRight, right, bottomRight, down, bottomLeft}
 
 var DigitRegex = regexp.MustCompile(`\d+`)
 
@@ -68,7 +68,7 @@ func scanSurroundings(rowIndex int, match []int, rows []string) bool {
 
 			neighbor := rows[y][x]
 
-			if isMatch(neighbor) {
+			if isSurroundedBySymbol(neighbor) {
 				return true
 			}
 		}
@@ -77,7 +77,7 @@ func scanSurroundings(rowIndex int, match []int, rows []string) bool {
 	return false
 }
 
-func isMatch(c byte) bool {
+func isSurroundedBySymbol(c byte) bool {
 	return !(c == '.' || unicode.IsDigit(rune(c)))
 }
 
