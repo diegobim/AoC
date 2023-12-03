@@ -11,6 +11,10 @@ if [ -z $DAY ]; then
 	exit 1 
 fi
 
+if [ -z "$PART" ]; then
+		PART="1"
+fi
+
 INPUT_FILE="input.txt"
 if [ -n "$TEST" ]; then
 		INPUT_FILE="sample.txt"
