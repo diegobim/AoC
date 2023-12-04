@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"sync"
 	"unicode"
 
 	"golang.org/x/exp/maps"
@@ -56,6 +57,9 @@ func main() {
 }
 
 func scanSurroundings(rowIndex int, charIndex int, rows []string) []string {
+	wg := sync.WaitGroup{}
+	lock := sync.RWMutex{}
+
 	rowMatches := map[int][][]int{}
 	adjacentMatches := map[string]string{}
 
@@ -71,25 +75,32 @@ func scanSurroundings(rowIndex int, charIndex int, rows []string) []string {
 			continue
 		}
 
-		row := rows[y]
-		neighbor := row[x]
+		wg.Add(1)
+		go func() {
+			row := rows[y]
+			neighbor := row[x]
 
-		if isDigit(neighbor) {
-			if _, ok := rowMatches[y]; !ok {
-				rowMatches[y] = DigitRegex.FindAllStringIndex(row, -1)
-			}
+			if isDigit(neighbor) {
+				lock.Lock()
+				if _, ok := rowMatches[y]; !ok {
+					rowMatches[y] = DigitRegex.FindAllStringIndex(row, -1)
+				}
 
-			for _, match := range rowMatches[y] {
-				key := fmt.Sprintf("%v:%v:%v", y, match[0], match[1])
+				for _, match := range rowMatches[y] {
+					key := fmt.Sprintf("%v:%v:%v", y, match[0], match[1])
 
-				if _, ok := adjacentMatches[key]; !ok {
-					if match[0] <= x && match[1] > x {
-						adjacentMatches[key] = row[match[0]:match[1]]
+					if _, ok := adjacentMatches[key]; !ok {
+						if match[0] <= x && match[1] > x {
+							adjacentMatches[key] = row[match[0]:match[1]]
+						}
 					}
 				}
+				lock.Unlock()
 			}
-		}
+			wg.Done()
+		}()
 	}
+	wg.Wait()
 
 	return maps.Values(adjacentMatches)
 }
