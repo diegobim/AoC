@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"regexp"
 	"strconv"
@@ -12,9 +13,9 @@ import (
 var DigitRegex = regexp.MustCompile(`\d+`)
 
 type AlmanacMapRecord struct {
-	dest int
-	src  int
-	rng  int
+	dest int64
+	src  int64
+	rng  int64
 }
 
 type AlmanacMap struct {
@@ -22,7 +23,7 @@ type AlmanacMap struct {
 }
 
 type Almanac struct {
-	seeds                 []int
+	seeds                 []int64
 	seedToSoil            AlmanacMap
 	soilToFertilizer      AlmanacMap
 	fertilizerToWater     AlmanacMap
@@ -43,7 +44,7 @@ func main() {
 
 	almanac := parse(&lines)
 
-	var minLocation int
+	var minLocation int64 = math.MaxInt64
 	for _, seed := range almanac.seeds {
 		soil := findCorrespondent(seed, &almanac.seedToSoil)
 		fertilizer := findCorrespondent(soil, &almanac.soilToFertilizer)
@@ -53,9 +54,7 @@ func main() {
 		humidity := findCorrespondent(temperature, &almanac.temperatureToHumidity)
 		location := findCorrespondent(humidity, &almanac.humidityToLocation)
 
-		if minLocation == 0 || location < minLocation {
-			minLocation = location
-		}
+		minLocation = min(location, minLocation)
 	}
 
 	fmt.Println(minLocation)
@@ -96,23 +95,23 @@ func parseMap(m string) *AlmanacMap {
 	return &AlmanacMap{records}
 }
 
-func parseNumbers(s string) *[]int {
-	numbers := []int{}
+func parseNumbers(s string) *[]int64 {
+	numbers := []int64{}
 	for _, n := range DigitRegex.FindAllString(s, -1) {
 		numbers = append(numbers, parseInt(n))
 	}
 	return &numbers
 }
 
-func parseInt(s string) int {
-	i, err := strconv.Atoi(s)
+func parseInt(s string) int64 {
+	i, err := strconv.ParseInt(s, 10, 64)
 	if err != nil {
 		panic(err)
 	}
 	return i
 }
 
-func findCorrespondent(n int, m *AlmanacMap) int {
+func findCorrespondent(n int64, m *AlmanacMap) int64 {
 	for _, r := range m.records {
 		if n >= r.src && n <= r.src+r.rng-1 {
 			return r.dest + (n - r.src)
