@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"regexp"
 	"strconv"
@@ -26,9 +27,9 @@ func main() {
 	}
 
 	race := *parse(&lines)
-	fmt.Println(race)
 
-	waysToWin := solve(&race)
+	// waysToWin := solve(&race)
+	waysToWin := solve_quadratic(&race)
 
 	fmt.Println(waysToWin)
 }
@@ -46,6 +47,23 @@ func parse(lines *string) *Race {
 
 func solve(race *Race) int64 {
 	return calculateWaysToWin(race)
+}
+
+func solve_quadratic(race *Race) int64 {
+	time := float64(race.time)
+	distance := float64(race.distance)
+
+	// Δ = b*b - 4*a
+	d := math.Pow(time, 2) - 4*distance
+
+	// x = (b +- sqrt(Δ)) / 2
+	min := (time - math.Sqrt(d)) / 2
+	max := (time + math.Sqrt(d)) / 2
+
+	minHoldTime := int64(math.Floor(min + 1))
+	maxHoldTime := int64(math.Ceil(max - 1))
+
+	return maxHoldTime - minHoldTime + 1
 }
 
 func calculateWaysToWin(race *Race) int64 {
