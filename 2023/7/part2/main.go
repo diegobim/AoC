@@ -101,58 +101,28 @@ func findKind(cards *string) string {
 	slices.Sort(values)
 	slices.Reverse(values)
 
-	// edge case
-	if jokerCount == 5 {
-		return "5oaK"
-	}
-
 	// redistribute jokers to the most significant cards
-	for i := 0; i < jokerCount; i++ {
-		if values[0] < 5 {
-			values[0]++
-		} else {
-			values[1]++
+	if len(values) > 0 {
+		j := 0
+		for i := 0; i < jokerCount; i++ {
+			if values[j] >= 5 {
+				j++
+			}
+			values[j]++
 		}
 	}
 
-	if len(values) == 1 {
+	if jokerCount == 5 || values[0] == 5 {
 		return "5oaK"
-	}
-
-	if len(values) == 2 {
-		var has3eq, hasPair bool
-
-		for _, v := range values {
-			if v == 4 {
-				return "4oaK"
-			}
-			if v == 3 {
-				has3eq = true
-			}
-			if v == 2 {
-				hasPair = true
-			}
-		}
-
-		if has3eq && hasPair {
-			return "FH"
-		}
-
+	} else if values[0] == 4 {
+		return "4oaK"
+	} else if values[0] == 3 && values[1] == 2 {
+		return "FH"
+	} else if values[0] == 3 {
 		return "3oaK"
-	}
-
-	if len(values) == 3 {
-		for _, v := range values {
-			if v == 3 {
-				return "3oaK"
-			}
-			if v == 2 {
-				return "2P"
-			}
-		}
-	}
-
-	if len(values) == 4 {
+	} else if values[0] == 2 && values[1] == 2 {
+		return "2P"
+	} else if values[0] == 2 {
 		return "1P"
 	}
 
