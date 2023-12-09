@@ -55,18 +55,15 @@ func solve(network *Network) int {
 	moves := 0
 	current := "AAA"
 
-	for i := 0; i < len(network.directions); i++ {
-		direction := string(network.directions[i])
-		current = network.nodes[current].edges[direction]
-		moves++
+	for current != "ZZZ" {
+		for i := 0; i < len(network.directions); i++ {
+			direction := string(network.directions[i])
+			current = network.nodes[current].edges[direction]
+			moves++
 
-		if current == "ZZZ" {
-			break
-		}
-
-		if i == len(network.directions)-1 {
-			// restart the loop
-			i = -1
+			if current == "ZZZ" {
+				break
+			}
 		}
 	}
 
